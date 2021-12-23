@@ -1,0 +1,349 @@
+////////////////////////////
+// MEDIA MANGER
+/*
+
+Screen mobile xs = 600
+Screen tablet portrate sm = 900
+Screen tablet landscape ms = 1200
+Screen desktop normal from 1200 to 1800
+Screen big from 1800 to xxxxxxl;
+
+*/
+
+////////////////////////////
+// MIXIN MEDIA QUERY MANGER
+@mixin respond ($pointbreak) {
+    @if ( $pointbreak == phone  ) {  // PHONE SCREEN EXTRA SMALL 600PX = 37.5EM
+
+        @media only screen and (max-width: 37.5em) { @content };
+
+    }@else if ( $pointbreak == tablet-p ) { // TABLET PORTRATE SMALL 900PX = 56.25EM
+
+        @media only screen and (max-width: 56.25em) { @content };
+
+    }@else if ( $pointbreak == tablet-l ) { // TABLET LANDSCAPE MEDIUM 1200PX = 75EM
+
+        @media only screen and (max-width: 75em) { @content };
+
+    } @else if ( $pointbreak == large-dt ) { // LARGE DESKTOP 1800PX = 112.5EM
+
+        @media only screen and (min-width: 112.5em ) { @content};
+
+    }@else if ( $pointbreak == proplem ) { // PROPLEM SOLVING MEDIA QUERY
+
+        @media only screen and (min-width: 56.3125em) { @content};
+
+    }@else if  ( $pointbreak == device) { // MEDIA DEVICE
+
+        @media only screen and(hover: none) { @content };
+
+    } @else if ($pointbreak == pixel) { // RESOLUTION 2X // LARGE
+
+        @media only screen and (min-resolution: 192dpi) and ($pointbreak),
+        only screen and (-webkit-min-device-pixel-ratio: 2) and ($pointbreak) { @content }
+
+    }
+
+};
+
+////////////////////////////
+// OTHER ALL
+$vendorPrefixer: ('webkit', 'moz', 'o');
+
+////////////////////////////
+// SUPPORTS
+@mixin support($prop, $value) {
+    
+    @supports( ( $prop: $value ) or 
+    (  '-webkit-'+$prop: $value  ) or
+    ( '-moz-'+$prop: $value ) or
+    ( '-o-'+$prop: $value ) )  
+    { @content };
+
+}
+
+////////////////////////////
+// MIXIN TRANSLATE ELEMENT
+@mixin translate ($positionY, $positionX, $valueY, $valueX) {
+    
+    #{$positionY}: $valueY;
+    #{$positionX}: $valueX;
+
+    @if $valueY == 50% and $valueX == 50% {
+
+        transform: translate(-$valueX, -$valueY);
+
+    }@else if $valueY == 50% {
+
+        transform: translateY(-$valueY);
+
+    }@else if $valueX == 50% {
+
+        transform: translateX(-$valueX);
+
+    }
+    
+}
+
+////////////////////////////
+// MIXIN FONTS MANGER
+
+/// ALL MAP SIZE
+// HEADINGS
+$headings: ( h1: 6, h2: 4.5, h3: 3, h4: 2.5 );
+
+// PARAGRAPHS
+$paragraphs: ( parBig: 1.8, parSmall: 1.5);
+
+// FONT MANGER
+@mixin fontManger ($type, $el, $unit, $color: white, $tTransform: lowercase) {
+
+    // HEAD
+    @if $type == 'head' {
+        
+        @if map-has-key($headings, $el) {
+    
+            font-size: #{map-get($headings, $el) + $unit};
+            color: $color;
+            text-transform: $tTransform;
+    
+            // RESPONSIVE
+            @include respond(tablet-p) {
+                font-size: #{map-get($headings, $el) / 1 + $unit};
+            }
+    
+            @include respond(phone) {
+                font-size: #{map-get($headings, $el) + 1 + $unit};
+            }
+    
+        }
+
+        // PARAGRAPH
+    } @else if $type == 'par' {
+
+        @if map-has-key($paragraphs, $el) {
+    
+            font-size: #{map-get($paragraphs, $el) + $unit};
+            color: $color;
+            line-height: $lineHeight;
+            text-transform: $tTransform;
+    
+            // RESPONSIVE
+            @include respond(tablet-p) {
+                font-size: #{map-get($paragraphs, $el) + .3 + $unit};
+            }
+            @include respond(phone) {
+                font-size: #{map-get($paragraphs, $el) + 1.3 + $unit};
+            }
+    
+        }
+
+    }
+
+}
+
+////////////////////////////
+// MIXIN SVG MANGER
+@mixin svgManger ($widthCon, $heightCon, $backgroundCon: transparent, $width: 100%, $height: 100%, $fill: white) {
+    width: $widthCon;
+    height: $heightCon;
+    background-color: $backgroundCon;
+
+    // USE INTO SVG ELEMENT
+    & > use {
+        width: $width;
+        height: $height;
+        fill: $fill;
+    }
+
+    // RESPONSIVE
+    @include respond(phone) {
+        width: #{$widthCon / 1.2};
+        height: #{$heightCon / 1.2};
+    }
+
+}
+
+////////////////////////////
+// MIXIN ICON MANGER
+@mixin iconManger ($size, $color: white, $include: false, $dir: false, $icon: false) {
+    
+    @if $include {
+        
+        &::#{$dir} {
+            content: $icon;
+            position: absolute;
+            display: block;
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: $size;
+            color: $color;
+            @content;
+            
+            // RESPONSIVE
+            @include respond(tablet-p) {
+                font-size: #{$size / 2}
+            }
+            
+            @include respond(phone) {
+                font-size: #{$size / 1.7}
+            }
+            
+        }
+        
+    } @else {
+        
+        color: $color;
+        font-size: $size;
+
+        // RESPONSIVE
+        @include respond(tablet-p) {
+            font-size: #{$size / 2}
+        }
+
+        @include respond(phone) {
+            font-size: #{$size / 1.7}
+        }
+
+    }
+
+}
+
+////////////////////////////
+// AFTER
+@mixin shape($dir, $dirV, $dirH, $moveV, $moveH, $width, $height, $color: false, $borderRadius: false) {
+    position: relative;
+
+    &::#{$dir} {
+        content: '';
+        position: absolute;
+        background-color: $color;
+        width: $width;
+        height: $height;
+        border-radius: $borderRadius;
+        display: block;
+        @include translate($dirV, $dirH, $moveV, $moveH);
+        @content;
+    }
+}
+
+////////////////////////////
+// BTN MANGER
+@mixin btnManger($fSize: 2.2rem, $width: auto, $height: auto, $backgroundColor: transparent, $padding: 1rem, $fontColor: black, $border: none, $outline: none, $tTransform: capitalize) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    border: $border;
+    outline: $outline;
+    font-size: $fSize;
+    color: $fontColor;
+    background-color: $backgroundColor;
+    padding: $padding;
+    width: $width;
+    height: $height;
+    text-transform: $tTransform;
+    cursor: pointer;
+    @content;
+    
+    // RESPONSIVE
+    @include respond(phone) {
+        font-size: #{$fSize + 1.2};
+        @content;
+    }
+
+}
+
+////////////////////////////
+// FORM MANGER
+@mixin formManger($type: text, $dir: inline-block, $widthForm: fit-content, $widthInput: auto, $padding: 0, $fontSize: 1rem, $bacColor: transparent, $fontColor: black, $border: none, $outline: none, $fcPlaceholder: black) {
+    
+    // FORM
+    width: $widthForm;
+
+    // INPUT
+    & input[type='#{$type}'] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        -o-appearance: none;
+        appearance: none;
+        font-family: inherit;
+        display: $dir;
+        background-color: $bacColor;
+        width: $widthInput;
+        border: $border;
+        outline: $outline;
+        padding: $padding;
+        font-size: $fontSize;
+        color: $fontColor;
+        text-transform: capitalize;
+        @content;
+
+
+        // PLACE HOLDER
+        &::placeholder {
+            color: $fcPlaceholder;
+            font-family: inherit;
+            @content;
+        }
+
+    }
+
+}
+
+////////////////////////////
+// RANGE SLIDER INPUT
+@mixin range($widthTrack: 100%, $heightTrack: 3px, $widthTumb: 15px, $heightTumb: 15px, $borderRadius: 50%, $backgroundColorTrack: black, $backgroundColorTumb: red, $borderTrack: 0, $borderTumb: 0) {
+    
+    position: relative;
+
+    // INPUT RANGE
+    & input[type="range"] {
+        position: absolute;
+        @each $vendor in $vendorPrefixer {
+            -#{$vendor}-appearance: none;
+        }
+        appearance: none;
+        outline: none;
+        @content;
+    }
+
+    // SLIDER RUNNABLE TRACK
+    @each $vendor in $vendorPrefixer {
+        
+        & input[type="range"]::-#{$vendor}-slider-runnable-track {
+            background-color: $backgroundColorTrack;
+            width:  $widthTrack;
+            height: $heightTrack;
+            border: $borderTrack;
+        }
+
+    }
+
+    // SLIDER TUMB
+    @each $vendor in $vendorPrefixer {
+
+        & input[type="range"]::-#{$vendor}-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            position: relative;
+            background-color: $backgroundColorTumb;
+            width:  $widthTumb;
+            height: $heightTumb;
+            margin-top: - #{($heightTumb - 2) / 2};
+            border-radius: $borderRadius;
+            border: $borderTumb;
+            z-index: 300;
+            cursor: pointer;
+        }
+
+    }
+
+}
+
+
+
+
+
